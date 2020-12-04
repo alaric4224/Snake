@@ -39,8 +39,8 @@ module Snake(
     
     decoder dcode(.x(keycodeout), .movement(move));
     
-    VGA_gen VGArefresh(.clk(clk), .x(x), .y(y), .v_sync(vsync), .h_sync(hsync), .display(de));
+    vga_gen_two VGArefresh(.clk(clk), .x(x), .y(y), .v_sync(vsync), .h_sync(hsync), .display(de));
     
-    VGAmov Snakemake(.move(move), .x(x), .y(y), .clk(clk), .r(r), .g(g), .b(b));
+    VGAmov Snakemake(.move(move), .x(x), .y(y), .de(de), .clk(clk), .r(r), .g(g), .b(b));
     
 endmodule

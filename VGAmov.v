@@ -25,7 +25,7 @@ module VGAmov(
     input [9:0] x,
     input [9:0] y,
     input clk,
-    output lose,
+    input de,
     output reg [3:0] r,
     output reg [3:0] g,
     output reg [3:0] b
@@ -39,10 +39,10 @@ module VGAmov(
     reg [199:0] storex;
     reg [199:0] storey;
     wire [7:0] score;
-    wire clk4;
+    wire clk4, clk25;
     
     Clock_Divider clkfour(.divider(27'd12_500_000), .clk(clk), .new_clk(clk4));
-    
+    Clock_Divider clk_divider(.divider(2), .clk(clk), .new_clk(clk25));
     initial begin
         snakex <= 10'b00001_01000;
         snakey <= 10'b00000_00000;
@@ -95,7 +95,8 @@ module VGAmov(
         endcase
     end
     
-    always @ (posedge clk) begin
+    always @ (posedge clk25) begin
+    if(de) begin
         if(((x < (applex + 20)) && (x >= applex)) && ((y < (appley + 20)) && (y >= appley))) begin
             r = 4'hF;
             g = 4'h0;
@@ -134,7 +135,13 @@ module VGAmov(
         else begin
             r = 4'h0;
             g = 4'h0;
-            b = 4'h0;
+            b = 4'hF;
         end
+    end
+    else begin
+        r = 4'h0;
+        g = 4'h0;
+        b = 4'h0;
+    end
     end
 endmodule
