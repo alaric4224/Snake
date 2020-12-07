@@ -33,14 +33,20 @@ module appleLogic(
     reg [11:0] counter;
     
     initial begin
-        counter = 0;
+        counter = 2000;
+        score <= 2;
     end
     
     always@ (posedge clk) begin
         if(counter == 4000)begin
             counter <= 0;
         end
-        if(newposx == applex && newposy == appley) begin
+        else
+        begin
+        counter <= counter + 1;
+        end
+        
+        if(newposx < applex + 10 && newposx > applex - 10 && newposy < appley + 10 && newposy > appley - 10) begin
             score <= score + 1;
             newapplex = counter % 32;
             newappley = counter % 24;

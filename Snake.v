@@ -24,9 +24,11 @@ module Snake(
     input clk,
     input kclk,
     input kdata,
-    output r,
-    output g,
-    output b,
+    input rst,
+    
+    output [3:0]r,
+    output [3:0]g,
+    output [3:0]b,
     output vsync,
     output hsync
     );
@@ -34,13 +36,30 @@ module Snake(
     wire de;
     wire [31:0] keycodeout;
     wire [2:0] move;
+    wire clk25;
+    wire reset;
+    wire locked;
+    
+    
+     clk_wiz_0 instx
+  (
+  // Clock out ports  
+  .clk25(clk25),
+  // Status and control signals               
+  .reset(reset), 
+  .locked(locked),
+ // Clock in ports
+  .clk_in1(clk)
+  );
+  
+  
     
     PS2Receiver keyboard(.clk(clk), .kclk(kclk), .kdata(kdata), .keycodeout(keycodeout));
     
     decoder dcode(.x(keycodeout), .movement(move));
     
-    vga_gen_two VGArefresh(.clk(clk), .x(x), .y(y), .v_sync(vsync), .h_sync(hsync), .display(de));
+    vga_gen_two VGArefresh(.clk(clk25), .x(x), .y(y), .v_sync(vsync), .h_sync(hsync), .display(de));
     
-    VGAmov Snakemake(.move(move), .x(x), .y(y), .de(de), .clk(clk), .r(r), .g(g), .b(b));
+    VGAmov Snakemake(.move(move), .x(x), .y(y), .de(de), .rst(rst), .clk(clk25), .r(r), .g(g), .b(b));
     
 endmodule

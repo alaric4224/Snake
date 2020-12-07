@@ -26,6 +26,8 @@ module VGAmov(
     input [9:0] y,
     input clk,
     input de,
+    input rst,
+    
     output reg [3:0] r,
     output reg [3:0] g,
     output reg [3:0] b
@@ -39,10 +41,10 @@ module VGAmov(
     reg [199:0] storex;
     reg [199:0] storey;
     wire [7:0] score;
-    wire clk4, clk25;
+    wire clk4;
     
-    Clock_Divider clkfour(.divider(27'd12_500_000), .clk(clk), .new_clk(clk4));
-    Clock_Divider clk_divider(.divider(2), .clk(clk), .new_clk(clk25));
+    Clock_Divider clkfour(.divider(32'd12_500_000), .clk(clk), .new_clk(clk4));
+   // Clock_Divider clk_divider(.divider(2), .clk(clk), .new_clk(clk25));
     initial begin
         snakex <= 10'b00001_01000;
         snakey <= 10'b00000_00000;
@@ -54,7 +56,8 @@ module VGAmov(
         appley = (12) * 20;
     end
     
-    appleLogic regAppleGen(.newposx(snakex), .newposy(snakey), .clk(clk25), .applex(applex), .appley(appley), .score(score), .newapplex(newapplex), .newappley(newappley));
+    
+    appleLogic regAppleGen(.newposx(snakex), .newposy(snakey), .clk(clk), .applex(applex), .appley(appley), .score(score), .newapplex(newapplex), .newappley(newappley));
     
     always @ (score[0]) begin
         applex <= newapplex;
@@ -62,6 +65,19 @@ module VGAmov(
     end
     
     always @ (posedge clk4) begin
+    if(rst)
+        begin
+            snakex <= 10'b00001_01000;
+            snakey <= 10'b00000_00000;
+            storex[199:20] <= 180'b0;
+            storey[199:20] <= 180'b0;
+            storex[19:0] <= 20'b00000_00000_00000_10100;
+            storey[19:0] <= 20'b00000_00000_00000_00000;
+            
+        end
+        else
+        begin
+        
         case(move)
         3'b000 : begin
             storex = storex << 10;
@@ -93,17 +109,21 @@ module VGAmov(
         end
         3'b100 : begin end
         endcase
+        end
     end
     
-    always @ (posedge clk25) begin
+    always @ (posedge clk) begin
     if(de) begin
+        
+       
+       
         if(((x < (applex + 20)) && (x >= applex)) && ((y < (appley + 20)) && (y >= appley))) begin
             r = 4'hF;
             g = 4'h0;
             b = 4'h0;
         end
         else if(((x < (snakex + 20)) && (x >= snakex)) && ((y < (snakey + 20)) && (y >= snakey))) begin
-            r = 4'hB;
+            r = 4'h2;
             g = 4'h4;
             b = 4'h8;
         end
@@ -132,11 +152,18 @@ module VGAmov(
             g = 4'h4;
             b = 4'h2;
         end
+        else if(x % 20 == 0 || y % 20 == 0)
+        begin
+        r = 4'h0;
+        g = 4'h0;
+        b = 4'h0;
+        end
         else begin
             r = 4'h0;
             g = 4'h0;
             b = 4'hF;
         end
+        
     end
     else begin
         r = 4'h0;

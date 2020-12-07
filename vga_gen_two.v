@@ -21,45 +21,43 @@
 
 
 module vga_gen_two(
-clk, x, y, v_sync, h_sync, display
+    input clk,
+    
+    output reg [9:0] x, y,
+    output v_sync, h_sync,
+    output display
     );
-    input clk;
-    output reg [15:0] x, y;
-    output v_sync, h_sync;
-    output reg display;
-    reg v_porch, h_porch;
-    wire new_clk;
     
-    Clock_Divider clk_divider(2, clk, new_clk);
-    
-    parameter max_x = 800;
-    parameter max_y = 525;
-    
-    always @(posedge new_clk)
+// horizontal timings
+
+    parameter HA_END = 639;          // end of active pixels
+    parameter HS_STA = HA_END + 16;  // sync starts after front porch
+    parameter HS_END = HS_STA + 96;  // sync ends
+    parameter LINE   = 799;          // last pixel on line (after back porch)
+
+    // vertical timings
+    parameter VA_END = 479;          // end of active pixels
+    parameter VS_STA = VA_END + 10;  // sync starts after front porch
+    parameter VS_END = VS_STA + 2;   // sync ends
+    parameter SCREEN = 524;          // last line on screen (after back porch)
+
+ 
+    assign h_sync = ~(x >= HS_STA && x < HS_END);  // invert: hsync polarity is negative
+    assign v_sync = ~(y >= VS_STA && y < VS_END);  // invert: vsync polarity is negative
+    assign display = (x <= HA_END && y <= VA_END);
+ 
+    always@(posedge clk)
     begin
-        if (max_x == x)
-            x <= 0;
-        else
-            x <= x + 1;
+    if(x == LINE)
+    begin
+        x <= 0;
+        y <= (y == SCREEN) ? 0 : y + 1;
     end
     
-    always @(posedge new_clk)
+    else
     begin
-        if (max_x == x)
-        begin
-            if (max_y == y)
-                y <= 0;
-            else
-                y <= y + 1;
-        end        
+        x <= x + 1;
     end
-    
-    always @(posedge new_clk)
-    begin
-        display <= (x >= 144 && x <= 784) && (y >= 35 && y <= 515);
     end
-    
-    assign v_sync = (y < 96) ? 1'b1:1'b0;
-    assign h_sync = (x < 2) ? 1'b1:1'b0;
     
 endmodule
