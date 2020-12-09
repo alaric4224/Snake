@@ -28,7 +28,7 @@ All of our code is connected by the top module "Snake"
             game_over - logic to display the game over screen if a loss occurs
     
         top - top module for the 7-segment display controls
-            clock_divider - another clock divider module
+            Clok - another clock divider module
             refreshcounter - refresh counter for 7-segment display
             anode_control - turns on displays based on refresh counter
             BCD_control - decoder for score input
