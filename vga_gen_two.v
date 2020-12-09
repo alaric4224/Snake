@@ -25,7 +25,8 @@ module vga_gen_two(
     
     output reg [9:0] x, y,
     output v_sync, h_sync,
-    output display
+    output display,
+    output animate
     );
     
 // horizontal timings
@@ -45,7 +46,8 @@ module vga_gen_two(
     assign h_sync = ~(x >= HS_STA && x < HS_END);  // invert: hsync polarity is negative
     assign v_sync = ~(y >= VS_STA && y < VS_END);  // invert: vsync polarity is negative
     assign display = (x <= HA_END && y <= VA_END);
- 
+    assign animate = (x == 0 && y == VA_END);
+    
     always@(posedge clk)
     begin
     if(x == LINE)

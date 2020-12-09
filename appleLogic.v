@@ -23,9 +23,9 @@
 module appleLogic(
     input [9:0] newposx,
     input [9:0] newposy,
-    input [9:0] applex,
-    input [9:0] appley,
     input clk,
+    input rst,
+    
     output reg [9:0] newapplex,
     output reg [9:0] newappley,
     output reg [7:0] score
@@ -33,10 +33,15 @@ module appleLogic(
     reg [11:0] counter;
     
     initial begin
+        newapplex = 320;
+        newappley = 240;
         counter = 2000;
-        score <= 2;
+        score <= 0;
     end
     
+    
+    
+        
     always@ (posedge clk) begin
         if(counter == 4000)begin
             counter <= 0;
@@ -45,16 +50,19 @@ module appleLogic(
         begin
         counter <= counter + 1;
         end
-        
-        if(newposx < applex + 10 && newposx > applex - 10 && newposy < appley + 10 && newposy > appley - 10) begin
+        if(rst)
+        begin
+            score <= 0;
+        end
+        if(newposx < newapplex + 30 && newposx > newapplex - 30 && newposy < newappley + 30 && newposy > newappley - 30) begin
             score <= score + 1;
-            newapplex = counter % 32;
-            newappley = counter % 24;
+            newapplex = (counter % 30) + 1;
+            newappley = (counter % 22) + 1;
             if(newposx == newapplex && newposy == newappley && newposx == 0 && newposy == 0) begin
                 newapplex = newapplex + 4;
                 newappley = newappley + 7;
             end
-            else if(newposx == applex && newposy == appley) begin
+            else if(newposx == newapplex && newposy == newappley) begin
                 newapplex = newapplex - 1;
                 newappley = newappley - 1;
             end
@@ -62,8 +70,8 @@ module appleLogic(
             newappley = newappley*5'd20;
         end
         else begin
-            newapplex <= applex;
-            newappley <= appley;
+            newapplex <= newapplex;
+            newappley <= newappley;
         end
     end
 endmodule

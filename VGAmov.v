@@ -21,7 +21,8 @@
 
 
 module VGAmov(
-    input [2:0] move,
+    input animate,
+    input [2:0] inmove,
     input [9:0] x,
     input [9:0] y,
     input clk,
@@ -30,7 +31,8 @@ module VGAmov(
     
     output reg [3:0] r,
     output reg [3:0] g,
-    output reg [3:0] b
+    output reg [3:0] b,
+    output [7:0] score
     );
     reg [9:0] snakex;
     reg [9:0] snakey;
@@ -40,42 +42,58 @@ module VGAmov(
     wire [9:0] newappley;
     reg [199:0] storex;
     reg [199:0] storey;
-    wire [7:0] score;
+    //wire [7:0] score;
     wire clk4;
+    wire GameOver;
+    wire border;
+    reg [2:0]move;
+    
     
     Clock_Divider clkfour(.divider(32'd12_500_000), .clk(clk), .new_clk(clk4));
    // Clock_Divider clk_divider(.divider(2), .clk(clk), .new_clk(clk25));
     initial begin
-        snakex <= 10'b00001_01000;
-        snakey <= 10'b00000_00000;
+        snakex <= 10'd380;
+        snakey <= 10'd280;
         storex[199:20] <= 180'b0;
         storey[199:20] <= 180'b0;
-        storex[19:0] <= 20'b00000_00000_00000_10100;
-        storey[19:0] <= 20'b00000_00000_00000_00000;
-        applex = (16) * 20;
-        appley = (12) * 20;
+        storex[9:0] <= 10'd360;
+        storey[9:0] <= 10'd280;
+        storex[19:10] <= 10'd340;
+        storey[19:10] <= 10'd280;
     end
     
     
-    appleLogic regAppleGen(.newposx(snakex), .newposy(snakey), .clk(clk), .applex(applex), .appley(appley), .score(score), .newapplex(newapplex), .newappley(newappley));
+    appleLogic regAppleGen(.newposx(snakex), .newposy(snakey), .clk(clk), .score(score), .newapplex(newapplex), .newappley(newappley), .rst(rst));
     
-    always @ (score[0]) begin
-        applex <= newapplex;
-        appley <= newappley;
-    end
+    game_over wrapper(.vga_clk(clk), .score(score), .snakex(snakex), .snakey(snakey), .storex(storex), .storey(storey), .x(x), .y(y), .GameOver(GameOver), .border(border));
+    
+    
     
     always @ (posedge clk4) begin
     if(rst)
         begin
-            snakex <= 10'b00001_01000;
-            snakey <= 10'b00000_00000;
+            snakex <= 10'd380;
+            snakey <= 10'd280;
             storex[199:20] <= 180'b0;
             storey[199:20] <= 180'b0;
-            storex[19:0] <= 20'b00000_00000_00000_10100;
-            storey[19:0] <= 20'b00000_00000_00000_00000;
+            storex[9:0] <= 10'd360;
+            storey[9:0] <= 10'd280;
+            storex[19:10] <= 10'd340;
+            storey[19:10] <= 10'd280;
             
         end
         else
+        begin
+        if(GameOver)
+        begin
+            move = 3'b100;
+        end
+        else
+        begin
+            move = inmove;
+        end
+        
+        if(animate)
         begin
         
         case(move)
@@ -110,14 +128,17 @@ module VGAmov(
         3'b100 : begin end
         endcase
         end
+        end
     end
     
     always @ (posedge clk) begin
     if(de) begin
-        
+    
+    if(~GameOver)
+    begin    
        
        
-        if(((x < (applex + 20)) && (x >= applex)) && ((y < (appley + 20)) && (y >= appley))) begin
+        if(((x < (newapplex + 20)) && (x >= newapplex)) && ((y < (newappley + 20)) && (y >= newappley))) begin
             r = 4'hF;
             g = 4'h0;
             b = 4'h0;
@@ -158,11 +179,25 @@ module VGAmov(
         g = 4'h0;
         b = 4'h0;
         end
+        else if(border)
+        begin
+        r = 4'h7;
+        g = 4'h5;
+        b = 4'h0;
+        end
         else begin
             r = 4'h0;
             g = 4'h0;
-            b = 4'hF;
+            b = 4'h8;
         end
+    end
+    
+    else
+    begin
+        r = 4'h8;
+        g = 4'h0;
+        b = 4'h0;
+    end
         
     end
     else begin
