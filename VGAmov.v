@@ -65,7 +65,7 @@ module VGAmov(
     
     appleLogic regAppleGen(.newposx(snakex), .newposy(snakey), .clk(clk), .score(score), .newapplex(newapplex), .newappley(newappley), .rst(rst));
     
-    game_over wrapper(.vga_clk(clk), .score(score), .snakex(snakex), .snakey(snakey), .storex(storex), .storey(storey), .x(x), .y(y), .GameOver(GameOver), .border(border));
+    game_over loseCondition(.vga_clk(clk), .score(score), .snakex(snakex), .snakey(snakey), .storex(storex), .storey(storey), .x(x), .y(y), .GameOver(GameOver), .border(border));
     
     
     
@@ -173,8 +173,82 @@ module VGAmov(
             g = 4'h4;
             b = 4'h2;
         end
-        else if(x % 20 == 0 || y % 20 == 0)
-        begin
+        else if(((x < (storex[59:50] + 20)) && (x >= storex[59:50])) && ((y < (storey[59:50] + 20)) && (y >= storey[59:50])) && (score > 8'd3)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[69:60] + 20)) && (x >= storex[69:60])) && ((y < (storey[69:60] + 20)) && (y >= storey[69:60])) && (score > 8'd4)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[79:70] + 20)) && (x >= storex[79:70])) && ((y < (storey[79:70] + 20)) && (y >= storey[79:70])) && (score > 8'd5)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[89:80] + 20)) && (x >= storex[89:80])) && ((y < (storey[89:80] + 20)) && (y >= storey[89:80])) && (score > 8'd6)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[99:90] + 20)) && (x >= storex[99:90])) && ((y < (storey[99:90] + 20)) && (y >= storey[99:90])) && (score > 8'd7)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[109:100] + 20)) && (x >= storex[109:100])) && ((y < (storey[109:100] + 20)) && (y >= storey[109:100])) && (score > 8'd8)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[119:110] + 20)) && (x >= storex[119:110])) && ((y < (storey[119:110] + 20)) && (y >= storey[119:110])) && (score > 8'd9)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[129:120] + 20)) && (x >= storex[129:120])) && ((y < (storey[129:120] + 20)) && (y >= storey[129:120])) && (score > 8'd10)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[139:130] + 20)) && (x >= storex[139:130])) && ((y < (storey[139:130] + 20)) && (y >= storey[139:130])) && (score > 8'd11)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[149:140] + 20)) && (x >= storex[149:140])) && ((y < (storey[149:140] + 20)) && (y >= storey[149:140])) && (score > 8'd12)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[159:150] + 20)) && (x >= storex[159:150])) && ((y < (storey[159:150] + 20)) && (y >= storey[159:150])) && (score > 8'd13)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[169:160] + 20)) && (x >= storex[169:160])) && ((y < (storey[169:160] + 20)) && (y >= storey[169:160])) && (score > 8'd14)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[179:170] + 20)) && (x >= storex[179:170])) && ((y < (storey[179:170] + 20)) && (y >= storey[179:170])) && (score > 8'd15)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[189:180] + 20)) && (x >= storex[189:180])) && ((y < (storey[189:180] + 20)) && (y >= storey[189:180])) && (score > 8'd16)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(((x < (storex[199:190] + 20)) && (x >= storex[199:190])) && ((y < (storey[199:190] + 20)) && (y >= storey[199:190])) && (score > 8'd17)) begin
+            r = 4'hB;
+            g = 4'h4;
+            b = 4'h2;
+        end
+        else if(x % 20 == 0 || y % 20 == 0) begin
         r = 4'h0;
         g = 4'h0;
         b = 4'h0;
