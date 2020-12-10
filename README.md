@@ -17,6 +17,7 @@ All of our code is connected by the top module "Snake"
     Snake - Top module which connects all other modules and the constraints file
     
         clk_wiz_0 - Vivado supplied clock divider module, creates the standard 25.2 MHz VGA clock
+            clk_wiz_0_clk_wiz - dependency for Vivado clock divider IP
     
         PS2Receiver - receives data from the connected keyboard
     
