@@ -67,11 +67,11 @@ case(refreshcounter)
 
     3'd2: ONE_DIGIT = 8'b11111110;//Third digit -> -
     
-    3'd3: ONE_DIGIT = 8'b00001010;// Fourth digit -> S
-    3'd4: ONE_DIGIT = 8'b00001100;// Fifth digit -> C
+    3'd3: ONE_DIGIT = 8'b00001110;// Fourth digit -> E
+    3'd4: ONE_DIGIT = 8'b00001011;// Fifth digit -> R
     3'd5: ONE_DIGIT = 8'b00000000;// Sixth digit -> O
-    3'd6: ONE_DIGIT = 8'b11111111;// Seventh digit -> R
-    3'd7: ONE_DIGIT = 8'b11111111;// Eighth digit -> E
+    3'd6: ONE_DIGIT = 8'b00001100;// Seventh digit -> C
+    3'd7: ONE_DIGIT = 8'b00001010;// Eighth digit -> S
     endcase
     end
 endmodule

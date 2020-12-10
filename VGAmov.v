@@ -28,6 +28,7 @@ module VGAmov(
     input clk,
     input de,
     input rst,
+    input palette,
     
     output reg [3:0] r,
     output reg [3:0] g,
@@ -40,6 +41,8 @@ module VGAmov(
     reg [9:0] appley;
     wire [9:0] newapplex;
     wire [9:0] newappley;
+    wire [9:0] papplex;
+    wire [9:0] pappley;
     reg [199:0] storex;
     reg [199:0] storey;
     //wire [7:0] score;
@@ -47,10 +50,10 @@ module VGAmov(
     wire GameOver;
     wire border;
     reg [2:0]move;
-    
+    reg [7:0]acount;
     
     Clock_Divider clkfour(.divider(32'd12_500_000), .clk(clk), .new_clk(clk4));
-   // Clock_Divider clk_divider(.divider(2), .clk(clk), .new_clk(clk25));
+    
     initial begin
         snakex <= 10'd380;
         snakey <= 10'd280;
@@ -63,13 +66,14 @@ module VGAmov(
     end
     
     
-    appleLogic regAppleGen(.newposx(snakex), .newposy(snakey), .clk(clk), .score(score), .newapplex(newapplex), .newappley(newappley), .rst(rst));
+    appleLogic regAppleGen(.newposx(snakex), .newposy(snakey), .clk(clk), .score(score), .newapplex(newapplex), .newappley(newappley), .papplex(papplex), .pappley(pappley), .rst(rst));
     
     game_over loseCondition(.vga_clk(clk), .score(score), .snakex(snakex), .snakey(snakey), .storex(storex), .storey(storey), .x(x), .y(y), .GameOver(GameOver), .border(border));
     
     
     
     always @ (posedge clk4) begin
+    
     if(rst)
         begin
             snakex <= 10'd380;
@@ -92,10 +96,8 @@ module VGAmov(
         begin
             move = inmove;
         end
-        
-        if(animate)
-        begin
-        
+       
+            
         case(move)
         3'b000 : begin
             storex = storex << 10;
@@ -127,7 +129,7 @@ module VGAmov(
         end
         3'b100 : begin end
         endcase
-        end
+        
         end
     end
     
@@ -139,114 +141,119 @@ module VGAmov(
        
        
         if(((x < (newapplex + 20)) && (x >= newapplex)) && ((y < (newappley + 20)) && (y >= newappley))) begin
-            r = 4'hF;
-            g = 4'h0;
-            b = 4'h0;
+            r = (palette) ? 4'hF : 4'h0;
+            g = (palette) ? 4'h0 : 4'h0;
+            b = (palette) ? 4'h0 : 4'hF;
+        end
+        else if(((x < (papplex + 20)) && (x >= papplex)) && ((y < (pappley + 20)) && (y >= pappley))) begin
+            r = (palette) ? 4'h0 : 4'h3;
+            g = (palette) ? 4'hF : 4'h8;
+            b = (palette) ? 4'h0 : 4'h5;
         end
         else if(((x < (snakex + 20)) && (x >= snakex)) && ((y < (snakey + 20)) && (y >= snakey))) begin
-            r = 4'h2;
-            g = 4'h4;
-            b = 4'h8;
+            r = (palette) ? 4'h2 : 4'h8;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h8 : 4'h2;
         end
         else if(((x < (storex[9:0] + 20)) && (x >= storex[9:0])) && ((y < (storey[9:0] + 20)) && (y >= storey[9:0]))) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[19:10] + 20)) && (x >= storex[19:10])) && ((y < (storey[19:10] + 20)) && (y >= storey[19:10]))) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[29:20] + 20)) && (x >= storex[29:20])) && ((y < (storey[29:20] + 20)) && (y >= storey[29:20])) && (score > 8'd0)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[39:30] + 20)) && (x >= storex[39:30])) && ((y < (storey[39:30] + 20)) && (y >= storey[39:30])) && (score > 8'd1)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[49:40] + 20)) && (x >= storex[49:40])) && ((y < (storey[49:40] + 20)) && (y >= storey[49:40])) && (score > 8'd2)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[59:50] + 20)) && (x >= storex[59:50])) && ((y < (storey[59:50] + 20)) && (y >= storey[59:50])) && (score > 8'd3)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[69:60] + 20)) && (x >= storex[69:60])) && ((y < (storey[69:60] + 20)) && (y >= storey[69:60])) && (score > 8'd4)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[79:70] + 20)) && (x >= storex[79:70])) && ((y < (storey[79:70] + 20)) && (y >= storey[79:70])) && (score > 8'd5)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[89:80] + 20)) && (x >= storex[89:80])) && ((y < (storey[89:80] + 20)) && (y >= storey[89:80])) && (score > 8'd6)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[99:90] + 20)) && (x >= storex[99:90])) && ((y < (storey[99:90] + 20)) && (y >= storey[99:90])) && (score > 8'd7)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[109:100] + 20)) && (x >= storex[109:100])) && ((y < (storey[109:100] + 20)) && (y >= storey[109:100])) && (score > 8'd8)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[119:110] + 20)) && (x >= storex[119:110])) && ((y < (storey[119:110] + 20)) && (y >= storey[119:110])) && (score > 8'd9)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[129:120] + 20)) && (x >= storex[129:120])) && ((y < (storey[129:120] + 20)) && (y >= storey[129:120])) && (score > 8'd10)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[139:130] + 20)) && (x >= storex[139:130])) && ((y < (storey[139:130] + 20)) && (y >= storey[139:130])) && (score > 8'd11)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[149:140] + 20)) && (x >= storex[149:140])) && ((y < (storey[149:140] + 20)) && (y >= storey[149:140])) && (score > 8'd12)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[159:150] + 20)) && (x >= storex[159:150])) && ((y < (storey[159:150] + 20)) && (y >= storey[159:150])) && (score > 8'd13)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[169:160] + 20)) && (x >= storex[169:160])) && ((y < (storey[169:160] + 20)) && (y >= storey[169:160])) && (score > 8'd14)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[179:170] + 20)) && (x >= storex[179:170])) && ((y < (storey[179:170] + 20)) && (y >= storey[179:170])) && (score > 8'd15)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[189:180] + 20)) && (x >= storex[189:180])) && ((y < (storey[189:180] + 20)) && (y >= storey[189:180])) && (score > 8'd16)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(((x < (storex[199:190] + 20)) && (x >= storex[199:190])) && ((y < (storey[199:190] + 20)) && (y >= storey[199:190])) && (score > 8'd17)) begin
-            r = 4'hB;
-            g = 4'h4;
-            b = 4'h2;
+            r = (palette) ? 4'hB : 4'h2;
+            g = (palette) ? 4'h4 : 4'h4;
+            b = (palette) ? 4'h2 : 4'hB;
         end
         else if(x % 20 == 0 || y % 20 == 0) begin
         r = 4'h0;
@@ -255,14 +262,14 @@ module VGAmov(
         end
         else if(border)
         begin
-        r = 4'h7;
-        g = 4'h5;
-        b = 4'h0;
+        r = (palette) ? 4'h7 : 4'h0;
+        g = (palette) ? 4'h5 : 4'h5;
+        b = (palette) ? 4'h0 : 4'h7;
         end
         else begin
-            r = 4'h0;
-            g = 4'h0;
-            b = 4'h8;
+        r = (palette) ? 4'h0 : 4'hA;
+        g = (palette) ? 4'h0 : 4'h0;
+        b = (palette) ? 4'h8 : 4'hF;
         end
     end
     

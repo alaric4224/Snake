@@ -25,6 +25,7 @@ module Snake(
     input kclk,
     input kdata,
     input arst,
+    input palette,
     
     output [3:0]r,
     output [3:0]g,
@@ -72,7 +73,7 @@ module Snake(
     
     vga_gen_two VGArefresh(.clk(clk25), .x(x), .y(y), .v_sync(vsync), .h_sync(hsync), .display(de), .animate(animate));
     
-    VGAmov Snakemake(.animate(animate), .inmove(move), .x(x), .y(y), .de(de), .rst(rst), .clk(clk25), .r(r), .g(g), .b(b), .score(score));
+    VGAmov Snakemake(.animate(animate), .inmove(move), .x(x), .y(y), .de(de), .rst(rst), .clk(clk25), .r(r), .g(g), .b(b), .score(score), .palette(palette));
     
     top wrapper(.clk(clk), .ans(score), .anode(anode), .o_Segment_A(o_Segment_A), .o_Segment_B(o_Segment_B), .o_Segment_C(o_Segment_C), .o_Segment_D(o_Segment_D), .o_Segment_E(o_Segment_E), .o_Segment_F(o_Segment_F), .o_Segment_G(o_Segment_G));
     
