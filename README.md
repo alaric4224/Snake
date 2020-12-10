@@ -9,7 +9,7 @@ Yoel Beyene
 
 How to run our project - Download all .v files and the xdc constraints file. In Vivado, add all .v files to a project as design sources and the xdc file as a constraints source. Connect a compatible FPGA board (this project was created with the Nexys A7 in mind), and hook the FPGA up to both a USB keyboard input and a DIRECT VGA to monitor output. The game will appear, but not start until the rst switch is flipped. The snake is controlled with the arrow keys on the keyboard, and the palette switch may be used to swap between color palettes. The current score is displayed on the 7-segment display. If the screen goes red, it means you have lost the game, and must press the reset switch to restart.
 
-Our demonstration video can be found in the EC311 drive and at the following Youtube link: 
+Our demonstration video can be found in the EC311 drive and at the following Youtube link: https://youtu.be/fCooCdQ-pSY 
 
 Code Structure:
 All of our code is connected by the top module "Snake"
